@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.codlibs'
+version = 'initial'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'info.picocli:picocli:4.7.6'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Optional Plugin: https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.codlibs.WordCountCommand',
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.name }.join(' ')
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
